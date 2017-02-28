@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>个性化拼图</title>
+		<style type="text/css">
+			table{border-collapse:collapse;}
+			td, #box_3_0{border:1px solid #888; width:320px; height:320px;}
+			td{width:320px; height:320px;}
+		</style>
+		<script type="text/javascript">
+			//页面元素，图片加载
+			function init(){
+				//alert("1");
+				var picture="hb"+(makeRandom(3)+1)+".jpg";				
+				var html=[];
+				html.push("<table>");
+				for(var i=0; i < 3; i++){
+					html.push("<tr>");
+					for(var j=0; j < 3; j++){
+						var top="-"+320*j+"px";
+						//alert(top);
+						var left="-"+320*i+"px";
+						html.push('<td id="box_' + i + "_" + j + '" style="background: url('+picture+') '+top+' '+left+';"></td>');
+					}
+					html.push("</tr>");
+				}
+				html.push("</table>");
+				html.push('<div id="box_3_0"></div>');
+				var pannel=document.getElementById("pannel");
+				pannel.innerHTML=html.join("");
+				startGame();
+		
+				backgroundAudio();
+			}
+			//背景音乐
+			function backgroundAudio(){
+				var bgAudio = new Audio('1.ogg');
+				bgAudio.loop = 'loop';
+				bgAudio.play();
+			}
+			//移动时的音乐
+			function moveAudio(){
+				var mAudio = new Audio('move.ogg');
+				mAudio.play();
+			}
+			//键盘事件操作
+			function move(){
+				switch(event.keyCode){
+					case 37:
+						left();
+						break;
+					case 38:
+						up();
+						break;
+					case 39:
+						right();
+						break;
+					case 40:
+						down();
+						break;
+					default:
+						break;
+				}
+				success();
+			}
+			//左移
+			function left(){
+				for(var i=0; i < 3; i++){
+					for(var j=0; j < 2; j++){
+						var inner = document.getElementById("box_"+i+"_"+j).style.background;
+						if(!inner){
+							document.getElementById("box_"+i+"_"+j).style.background=document.getElementById("box_"+i+"_"+(j+1)).style.background;
+							document.getElementById("box_"+i+"_"+(j+1)).style.background="";
+							return;
+						}
+					}
+				}
+			}
+			//上移
+			function up(){
+				for(var i=0; i < 3; i++){
+					for(var j=0; (j < 3 && i < 2) || (i==2 && j==0); j++){
+						var inner = document.getElementById("box_"+i+"_"+j).style.background;
+						if(!inner){
+							document.getElementById("box_"+i+"_"+j).style.background=document.getElementById("box_"+(i+1)+"_"+j).style.background;
+							document.getElementById("box_"+(i+1)+"_"+j).style.background="";
+							return;
+						}
+					}
+				}
+			}
+			//右移
+			function right(){
+				for(var i=0; i < 3; i++){
+					for(var j=1; j < 3; j++){
+						var inner = document.getElementById("box_"+i+"_"+j).style.background;
+						if(!inner){
+							document.getElementById("box_"+i+"_"+j).style.background=document.getElementById("box_"+i+"_"+(j-1)).style.background;
+							document.getElementById("box_"+i+"_"+(j-1)).style.background="";
+							return;
+						}
+					}
+				}
+			}
+			//下移
+			function down(){			
+				for(var i=0; i < 4; i++){
+					for(var j=0; (j < 3 && i < 3) || (i==3 && j==0); j++){
+						var inner = document.getElementById("box_"+i+"_"+j).style.background;
+						if(!inner && i-1>=0){
+							document.getElementById("box_"+i+"_"+j).style.background=document.getElementById("box_"+(i-1)+"_"+j).style.background;
+							document.getElementById("box_"+(i-1)+"_"+j).style.background="";
+							return;
+						}
+					}
+				}
+			}
+			//判断是否完成拼图
+			function success(){
+				if(!document.getElementById("box_3_0").style.background){
+					for(var i=0; i < 3; i++){
+						for(var j=0; j < 3; j++){
+							var x = document.getElementById("box_"+i+"_"+j).style.backgroundPositionX;
+							var y = document.getElementById("box_"+i+"_"+j).style.backgroundPositionY;
+							//console.log(x);
+							if(x==(j*(-320)+"px") && y==(i*(-320)+"px")){
+								continue;
+							}else{
+								return;
+							}
+						}
+					}
+					setTimeout(function(){
+						alert("祝黄天华，奥登，匡钢琴2017年工资涨涨涨！");						
+					},0);
+					//alert("成功");
+				}				
+			}
+			//手指放到屏幕上时,触摸点相对浏览器窗口的位置
+			var startX=0;
+			var startY=0;
+			//手指离开屏幕时,触摸点相对浏览器窗口的位置
+			var endX=0;
+			var endY=0;
+			//手指放到屏幕上时触发
+			function startT(ev){
+				startX=ev.touches[0].clientX;
+				startY=ev.touches[0].clientY;
+				divStart.innerHTML='Touch start('+ev.touches[0].clientX+', '+ev.touches[0].clientY+')';
+				ev.preventDefault();  //阻止出现滚动条 
+			}
+			//手指离开屏幕时触发
+			function endT(ev){
+				//alert("touchend");
+				endX=ev.changedTouches[0].clientX;
+				endY=ev.changedTouches[0].clientY;						
+				divEnd.innerHTML='Touch end('+ev.changedTouches[0].clientX+', '+ev.changedTouches[0].clientY+')'; 
+				doAction();
+			}
+			//判断方向，移动块
+			function doAction(){
+				if(startX > endX && (startX-endX) > Math.abs(startY-endY)){
+					left();
+				}
+				if(startY > endY && (startY-endY) > Math.abs(startX-endX)){
+					up();
+				}
+				if(startX < endX && (endX-startX) > Math.abs(startY-endY)){
+					right();
+				}
+				if(startY < endY && (endY-startY) > Math.abs(startX-endX)){
+					down();
+				}
+				moveAudio();
+				success();	
+			}
+			//绑定监听事件
+			document.addEventListener('touchstart',startT,false); 
+			document.addEventListener('touchend',endT,false); 
+			//document.addEventListener('touchmove',touches,false); 
+			document.addEventListener('keyup',move,false);
+			
+			function startGame(){
+				down();
+				left();
+				down();
+				for(var i=0;i<25;i++){
+					var mov=makeRandom(4);
+					switch(mov){
+						case 0:
+							left();
+							break;
+						case 1:
+							up();
+							break;
+						case 2:
+							right();
+							break;
+						case 3:
+							down();
+							break;
+						default:
+							break;
+					}
+				}	
+			}
+			function makeRandom(n){
+				return parseInt(n*Math.random());
+			}
+		</script>
+	</head>
+	<body onload="init()">
+		<div id="pannel"></div>
+		<div id="divStart"></div> 
+		<div id="divMove"></div>
+		<div id="divEnd"></div>
+		<!--<input type="button" value="开始" onclick="startGame()">-->
+	</body>
+</html>
