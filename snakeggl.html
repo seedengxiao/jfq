@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<meta charset="gbk">
 		<title>贪吃蛇-刮刮乐</title>
 		<style type="text/css">
-			#pannelBack{width:960px; height:960px; }
+			#pannelBack{width:960px; height:1280px; }
 		</style>		
 	</head>
 	<body onload="init()">
 		<div style="position:relative;">
 			<img id="pannelBack" src="" style="opacity:1;" >
-			<canvas id="myCanvas" width="960px" height="960px" style="position:absolute;left:0px;top:0px;"></canvas>
+			<canvas id="myCanvas" width="960px" height="1280px" style="position:absolute;left:0px;top:0px;"></canvas>
 			<div id="divStart"></div> 
 			<div id="divMove"></div>
 			<div id="divEnd"></div>
@@ -35,14 +35,14 @@
 			var fruit={};
 			function init(){
 				ctx.fillStyle="#FFF";
-				ctx.fillRect(0,0,960,960);
+				ctx.fillRect(0,0,960,1280);
 				//绘制方格
 				for(var i=0;i<13;i++){
 					ctx.moveTo(80*i,0);
-					ctx.lineTo(80*i,960);
+					ctx.lineTo(80*i,1280);
 					ctx.stroke();
 				}
-				for(var i=0;i<13;i++){
+				for(var i=0;i<17;i++){
 					ctx.moveTo(0,80*i);
 					ctx.lineTo(960,80*i);
 					ctx.stroke();
@@ -51,7 +51,7 @@
 				document.getElementById("pannelBack").src=picture;
 				paint(snake);
 				createFruit();
-				loopMove=window.setInterval(move,500);
+				loopMove=window.setInterval(move,450);
 			}
 			//移动蛇
 			function move(){	
@@ -79,7 +79,7 @@
 						snake.unshift({x:snake[0].x,y:snake[0].y-1});
 						break;	
 					case DOWN:
-						if(snake[0].y + 1 >= 12){
+						if(snake[0].y + 1 >= 16){
 							gameover();
 							return;
 						}
@@ -107,7 +107,7 @@
 				var cover=false;
 				do{
 					fruit.x=makeRandom(12);
-					fruit.y=makeRandom(12);
+					fruit.y=makeRandom(16);
 					cover=false;
 					for(var i=0;i<snake.length-1;i++){
 						if(fruit.x==snake[i].x && fruit.y==snake[i].y){
