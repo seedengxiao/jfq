@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<meta charset="gbk">
 		<title>刮刮乐</title>
 		<style type="text/css">
-			#pannelBack{width:960px; height:960px; }
+			#pannelBack{width:960px; height:1280px; }
 		</style>		
 	</head>
 	<body onload="init()">
 		<div style="position:relative;">
 			<img id="pannelBack" src="" style="opacity:1;" >
-			<canvas id="myCanvas" width="960px" height="960px" style="position:absolute;left:0px;top:0px;"></canvas>
+			<canvas id="myCanvas" width="960px" height="1280px" style="position:absolute;left:0px;top:0px;"></canvas>
 			<div id="divStart"></div> 
 			<div id="divMove"></div>
 			<div id="divEnd"></div>
@@ -22,7 +22,12 @@
 			var ctx=c.getContext("2d");
 			function init(){
 				ctx.fillStyle="#999";
-				ctx.fillRect(0,0,960,960);
+				ctx.fillRect(0,0,960,1280);
+				ctx.font="160px arial";
+				for(var i=0;i<6;i++){
+					//ctx.fillText("刮啥得啥",80,200*(i+1));
+					ctx.strokeText("青春的记忆",80,200*(i+1));
+				}				
 				var picture="jfq ("+(makeRandom(8)+1)+").jpg";
 				document.getElementById("pannelBack").src=picture;
 			}
@@ -32,16 +37,16 @@
 				ctx.clearRect( x , y , Math.sin( angle * ( Math.PI / 180 )) * r , Math.cos( angle * ( Math.PI / 180 )) * r );
 				}
 			}
-			var pers=960*960*3/5;
+			var pers=960*1280*1/2;
 			function clearAll(){
-				var imgData=ctx.getImageData(0,0,960,960);
+				var imgData=ctx.getImageData(0,0,960,1280);
 				var num=0;				
 				for (var i=0;i<imgData.data.length;i+=4){
 					if(imgData.data[i+3]==0){
 						num++;
 						if(num>pers){
-							//alert("完成");
-							ctx.clearRect(0,0,960,960);
+							//alert("青春的记忆");
+							ctx.clearRect(0,0,960,1280);
 							return;
 						}
 					}
